@@ -351,6 +351,23 @@ body,
     0 4px 20px rgba(0, 0, 0, 0.4),
     0 0 30px rgba(15, 74, 74, 0.12),
     0 0 8px rgba(212, 175, 55, 0.04) !important;
+  transition:
+    transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 200ms ease !important;
+}
+
+.excalidraw .Island:hover,
+.excalidraw .layer-ui__wrapper__footer-center .Island:hover,
+.excalidraw .layer-ui__wrapper__footer-right .Island:hover {
+  transform: scale(1.02) !important;
+  border-color: rgba(212, 197, 160, 0.15) !important;
+  box-shadow:
+    0 8px 30px rgba(0, 0, 0, 0.5),
+    0 4px 12px rgba(0, 0, 0, 0.3),
+    0 0 35px rgba(15, 74, 74, 0.15),
+    0 0 12px rgba(212, 175, 55, 0.06),
+    inset 0 1px 0 rgba(212, 197, 160, 0.04) !important;
 }
 
 /* ── Main toolbar pill ───────────────────────────────────────────── */
@@ -419,6 +436,12 @@ body,
   color: #9A9282 !important;
   border-radius: 8px !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35) !important;
+  transition:
+    transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1),
+    color 200ms ease,
+    border-color 200ms ease,
+    background 200ms ease !important;
 }
 
 .excalidraw .App-menu_top .dropdown-menu-button:hover,
@@ -426,9 +449,17 @@ body,
   color: #E9DFB4 !important;
   border-color: rgba(212, 175, 55, 0.25) !important;
   background: #071417 !important;
+  transform: scale(1.08) !important;
   box-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.35),
-    0 0 15px rgba(15, 74, 74, 0.15) !important;
+    0 6px 20px rgba(0, 0, 0, 0.45),
+    0 0 20px rgba(15, 74, 74, 0.15),
+    inset 0 1px 0 rgba(212, 197, 160, 0.04) !important;
+}
+
+.excalidraw .App-menu_top .dropdown-menu-button:active,
+.excalidraw .App-menu_top button:active {
+  transform: scale(0.95) !important;
+  transition: transform 80ms ease !important;
 }
 
 /* ── Library button ──────────────────────────────────────────────── */
@@ -440,6 +471,12 @@ body,
   color: #9A9282 !important;
   border-radius: 8px !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35) !important;
+  transition:
+    transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1),
+    color 200ms ease,
+    border-color 200ms ease,
+    background 200ms ease !important;
 }
 
 .excalidraw .library-menu-browse-button:hover,
@@ -447,22 +484,41 @@ body,
   color: #E9DFB4 !important;
   border-color: rgba(212, 175, 55, 0.25) !important;
   background: #071417 !important;
+  transform: scale(1.05) !important;
   box-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.35),
-    0 0 18px rgba(15, 74, 74, 0.15),
-    0 0 6px rgba(212, 175, 55, 0.06) !important;
+    0 6px 20px rgba(0, 0, 0, 0.45),
+    0 0 22px rgba(15, 74, 74, 0.15),
+    0 0 8px rgba(212, 175, 55, 0.06),
+    inset 0 1px 0 rgba(212, 197, 160, 0.04) !important;
+}
+
+.excalidraw .library-menu-browse-button:active,
+.excalidraw [aria-label="Library"]:active {
+  transform: scale(0.95) !important;
+  transition: transform 80ms ease !important;
 }
 
 /* ── Zoom + undo/redo buttons ────────────────────────────────────── */
 .excalidraw .zoom-actions button,
 .excalidraw .undo-redo-buttons button {
   color: #9A9282;
+  transition:
+    transform 250ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    color 200ms ease,
+    background 200ms ease !important;
 }
 
 .excalidraw .zoom-actions button:hover,
 .excalidraw .undo-redo-buttons button:hover {
   color: #D4C5A0;
   background: rgba(212, 197, 160, 0.08) !important;
+  transform: scale(1.12) !important;
+}
+
+.excalidraw .zoom-actions button:active,
+.excalidraw .undo-redo-buttons button:active {
+  transform: scale(0.9) !important;
+  transition: transform 80ms ease !important;
 }
 
 /* ── Help / shortcuts button ─────────────────────────────────────── */
@@ -474,6 +530,11 @@ body,
   color: #9A9282 !important;
   border-radius: 50% !important;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35) !important;
+  transition:
+    transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1),
+    color 200ms ease,
+    border-color 200ms ease !important;
 }
 
 .excalidraw .help-icon:hover,
@@ -481,9 +542,18 @@ body,
 .excalidraw [aria-label="Help"]:hover {
   color: #E9DFB4 !important;
   border-color: rgba(212, 175, 55, 0.25) !important;
+  transform: scale(1.1) !important;
   box-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.35),
-    0 0 15px rgba(15, 74, 74, 0.2) !important;
+    0 6px 20px rgba(0, 0, 0, 0.45),
+    0 0 20px rgba(15, 74, 74, 0.2),
+    inset 0 1px 0 rgba(212, 197, 160, 0.04) !important;
+}
+
+.excalidraw .help-icon:active,
+.excalidraw [aria-label="Shortcuts"]:active,
+.excalidraw [aria-label="Help"]:active {
+  transform: scale(0.9) !important;
+  transition: transform 80ms ease !important;
 }
 
 /* ── Dropdown menus / context menus ──────────────────────────────── */
