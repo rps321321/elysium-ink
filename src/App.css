@@ -82,107 +82,59 @@ body,
   inset: 0;
   z-index: 1;
   pointer-events: none;
+  mix-blend-mode: soft-light;
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   TILING-BREAK STRATEGY
-   ─────────────────────
-   Each organic texture uses multiple SVG feTurbulence layers at
-   NON-HARMONIC tile sizes (e.g. 200/307/503) so the repeat seams
-   never align. Each layer uses a different seed, baseFrequency,
-   and numOctaves. The ::before and ::after pseudo-elements stack
-   additional octaves, sometimes rotated, to break any remaining
-   pattern. Grid textures (dot-grid, blueprint) are mathematical
-   and SHOULD tile — they stay simple.
+   PROCEDURAL TEXTURE SYSTEM (Blender/Substance-inspired)
+   ─────────────────────────────────────────────────────
+   Each organic texture is a SINGLE SVG with an internal filter chain
+   (feTurbulence → feDisplacementMap → feColorMatrix → feMerge).
+   NO ::before/::after pseudo-elements — fixes the pan/zoom drift bug.
+
+   Multi-octave compositing happens inside the SVG via feMerge.
+   Domain warping via feDisplacementMap adds organic distortion.
+   Non-harmonic prime tile sizes (401/503/607) break visible tiling.
+   mix-blend-mode: soft-light integrates textures with any canvas bg.
    ═══════════════════════════════════════════════════════════════════ */
 
-/* ── Paper — 3 octaves of fractal noise at non-harmonic tile sizes ── */
+/* ── Paper — 3-octave fBM with directional fiber + domain warping ── */
 .canvas-texture--paper {
-  /* Octave 1: fine grain — seed 1, high freq, small tile */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='a'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' seed='1' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23a)' opacity='0.07'/%3E%3C/svg%3E");
-  background-size: 200px 200px;
-}
-.canvas-texture--paper::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  /* Octave 2: medium fiber — seed 7, mid freq, prime tile 307px */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='307' height='307'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.45' numOctaves='3' seed='7' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='307' height='307' filter='url(%23b)' opacity='0.05'/%3E%3C/svg%3E");
-  background-size: 307px 307px;
-}
-.canvas-texture--paper::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  /* Octave 3: macro variation — seed 23, low freq, large prime tile 503px */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='503' height='503'%3E%3Cfilter id='c'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.2' numOctaves='2' seed='23' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='503' height='503' filter='url(%23c)' opacity='0.04'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='503' height='503'%3E%3Cfilter id='paper' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8 0.4' numOctaves='4' seed='1' stitchTiles='stitch' result='fine'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.35' numOctaves='3' seed='7' stitchTiles='stitch' result='medium'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.12' numOctaves='2' seed='23' stitchTiles='stitch' result='macro'/%3E%3CfeDisplacementMap in='fine' in2='macro' scale='3' xChannelSelector='R' yChannelSelector='G' result='warped'/%3E%3CfeMerge%3E%3CfeMergeNode in='warped'/%3E%3CfeMergeNode in='medium'/%3E%3CfeMergeNode in='macro'/%3E%3C/feMerge%3E%3C/filter%3E%3Crect width='503' height='503' filter='url(%23paper)' opacity='0.2'/%3E%3C/svg%3E");
   background-size: 503px 503px;
 }
 
-/* ── Canvas Weave — crosshatch at 2 non-harmonic scales + noise break ── */
+/* ── Canvas Weave — diagonal crosshatch + noise thickness modulation ── */
 .canvas-texture--canvas-weave {
-  /* Fine weave: 6px checkerboard */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='6' height='6'%3E%3Crect width='6' height='6' fill='transparent'/%3E%3Cpath d='M0 0h3v3H0zM3 3h3v3H3z' fill='rgba(100,85,60,0.08)'/%3E%3C/svg%3E");
-  background-size: 6px 6px;
-}
-.canvas-texture--canvas-weave::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  /* Coarse weave: 11px (non-harmonic to 6) — breaks fine weave tiling */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11'%3E%3Crect width='11' height='11' fill='transparent'/%3E%3Cline x1='0' y1='0' x2='11' y2='11' stroke='rgba(90,75,50,0.06)' stroke-width='0.5'/%3E%3Cline x1='11' y1='0' x2='0' y2='11' stroke='rgba(90,75,50,0.04)' stroke-width='0.5'/%3E%3C/svg%3E");
-  background-size: 11px 11px;
-}
-.canvas-texture--canvas-weave::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  /* Noise break layer — low-freq turbulence at 401px to modulate weave density */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='401' height='401'%3E%3Cfilter id='w'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.15' numOctaves='2' seed='42' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='401' height='401' filter='url(%23w)' opacity='0.04'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='401' height='401'%3E%3Cfilter id='weave' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.4' numOctaves='2' seed='42' stitchTiles='stitch' result='noise'/%3E%3CfeColorMatrix in='noise' type='matrix' values='1.2 0 0 0 0.06 0 0.9 0 0 0.03 0 0 0.5 0 0 0 0 0 0.8 0' result='warmNoise'/%3E%3C/filter%3E%3Cdefs%3E%3Cpattern id='h1' width='16' height='16' patternUnits='userSpaceOnUse' patternTransform='rotate(15)'%3E%3Cline x1='0' y1='0' x2='0' y2='16' stroke='rgba(120,100,65,0.18)' stroke-width='0.8'/%3E%3C/pattern%3E%3Cpattern id='h2' width='16' height='16' patternUnits='userSpaceOnUse' patternTransform='rotate(-15)'%3E%3Cline x1='0' y1='0' x2='0' y2='16' stroke='rgba(120,100,65,0.14)' stroke-width='0.6'/%3E%3C/pattern%3E%3C/defs%3E%3Crect width='401' height='401' fill='url(%23h1)'/%3E%3Crect width='401' height='401' fill='url(%23h2)'/%3E%3Crect width='401' height='401' filter='url(%23weave)' opacity='0.15'/%3E%3C/svg%3E");
   background-size: 401px 401px;
 }
 
-/* ── Parchment — warm aged paper: 3 noise octaves + color staining ── */
+/* ── Parchment — 3-layer noise + warm feColorMatrix + domain warping ── */
 .canvas-texture--parchment {
-  /* Octave 1: coarse grain with warm tint — seed 5, 251px prime tile */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='251' height='251'%3E%3Cfilter id='p1'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.5' numOctaves='4' seed='5' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='1 0 0 0 0.08 0 0.8 0 0 0.04 0 0 0.5 0 0 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='251' height='251' filter='url(%23p1)' opacity='0.07'/%3E%3C/svg%3E");
-  background-size: 251px 251px;
-}
-.canvas-texture--parchment::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  /* Octave 2: fine detail — seed 17, high freq, 173px prime tile */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='173' height='173'%3E%3Cfilter id='p2'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' seed='17' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='173' height='173' filter='url(%23p2)' opacity='0.05'/%3E%3C/svg%3E");
-  background-size: 173px 173px;
-}
-.canvas-texture--parchment::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  /* Octave 3: macro stain blotches — seed 31, very low freq, 607px prime tile */
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='607' height='607'%3E%3Cfilter id='p3'%3E%3CfeTurbulence type='turbulence' baseFrequency='0.08' numOctaves='2' seed='31' stitchTiles='stitch'/%3E%3CfeColorMatrix type='matrix' values='0.6 0 0 0 0.1 0 0.4 0 0 0.06 0 0 0.2 0 0 0 0 0 0.8 0'/%3E%3C/filter%3E%3Crect width='607' height='607' filter='url(%23p3)' opacity='0.04'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='607' height='607'%3E%3Cfilter id='parch' x='0' y='0' width='100%25' height='100%25' color-interpolation-filters='sRGB'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' seed='17' stitchTiles='stitch' result='fine'/%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.35' numOctaves='3' seed='5' stitchTiles='stitch' result='medRaw'/%3E%3CfeColorMatrix in='medRaw' type='matrix' values='1.3 0 0 0 0.1 0 0.85 0 0 0.05 0 0 0.4 0 0 0 0 0 1 0' result='medium'/%3E%3CfeTurbulence type='turbulence' baseFrequency='0.06' numOctaves='2' seed='31' stitchTiles='stitch' result='macroRaw'/%3E%3CfeColorMatrix in='macroRaw' type='matrix' values='0.7 0 0 0 0.15 0 0.45 0 0 0.08 0 0 0.2 0 0 0 0 0 0.9 0' result='macro'/%3E%3CfeDisplacementMap in='fine' in2='macro' scale='4' xChannelSelector='R' yChannelSelector='G' result='warped'/%3E%3CfeMerge%3E%3CfeMergeNode in='warped'/%3E%3CfeMergeNode in='medium'/%3E%3CfeMergeNode in='macro'/%3E%3C/feMerge%3E%3C/filter%3E%3Crect width='607' height='607' filter='url(%23parch)' opacity='0.22'/%3E%3C/svg%3E");
   background-size: 607px 607px;
 }
 
-/* ── Dot Grid — mathematical, designed to tile cleanly ────────────── */
+/* ── Dot Grid — soft-edge dots, warm brand color, 24px spacing ────── */
 .canvas-texture--dot-grid {
   background-image: radial-gradient(
-    circle, rgba(120, 110, 90, 0.3) 0.8px, transparent 0.8px
+    circle,
+    rgba(154, 146, 130, 0.35) 1px,
+    rgba(154, 146, 130, 0.08) 1.5px,
+    transparent 2px
   );
-  background-size: 20px 20px;
-  opacity: 0.6;
+  background-size: 24px 24px;
 }
 
-/* ── Blueprint — engineering grid, designed to tile cleanly ────────── */
+/* ── Blueprint — teal-tinted 2-scale grid, reduced prominence ────── */
 .canvas-texture--blueprint {
   background-image:
-    linear-gradient(rgba(60, 130, 200, 0.15) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(60, 130, 200, 0.15) 1px, transparent 1px),
-    linear-gradient(rgba(60, 130, 200, 0.07) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(60, 130, 200, 0.07) 1px, transparent 1px);
+    linear-gradient(rgba(50, 140, 170, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(50, 140, 170, 0.12) 1px, transparent 1px),
+    linear-gradient(rgba(50, 140, 170, 0.05) 0.5px, transparent 0.5px),
+    linear-gradient(90deg, rgba(50, 140, 170, 0.05) 0.5px, transparent 0.5px);
   background-size: 100px 100px, 100px 100px, 20px 20px, 20px 20px;
-  opacity: 0.7;
 }
 
 /* ─── Loading Screen ────────────────────────────────────────────── */
