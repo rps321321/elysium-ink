@@ -1,0 +1,6 @@
+{
+  "buildCommand": "npm run build:web",
+  "outputDirectory": "dist-web",
+  "framework": null,
+  "ignoreCommand": "exit 1"
+}
