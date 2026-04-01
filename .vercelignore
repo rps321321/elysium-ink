@@ -1,0 +1,13 @@
+node_modules
+dist
+dist-web
+dist-ssr
+release
+public/preload-libraries-directory.json
+public/default-library.json
+public/libraries/
+excalidraw-libraries/
+.playwright-mcp/
+lint-results.json
+test-header.js
+*.log
