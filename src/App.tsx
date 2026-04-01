@@ -376,10 +376,12 @@ function AppInner() {
                 </MainMenu.Item>
                 <MainMenu.Separator />
 
-                {/* ─── Surface texture ─── */}
-                <MainMenu.Group title="Surface">
+                {/* ─── Canvas — background color + surface texture ─── */}
+                <MainMenu.Group title="Canvas">
+                  <MainMenu.DefaultItems.ChangeCanvasBackground />
+                  <MainMenu.Separator />
                   {([
-                    ["none", "Clean"],
+                    ["none", "No Texture"],
                     ["paper", "Paper"],
                     ["canvas-weave", "Canvas"],
                     ["parchment", "Parchment"],
@@ -399,10 +401,6 @@ function AppInner() {
                     </MainMenu.Item>
                   ))}
                 </MainMenu.Group>
-                <MainMenu.Separator />
-
-                {/* ─── Canvas settings ─── */}
-                <MainMenu.DefaultItems.ChangeCanvasBackground />
               </MainMenu>
             </Excalidraw>
           </Suspense>
