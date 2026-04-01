@@ -524,6 +524,80 @@ body,
   padding: 8px 12px 4px !important;
 }
 
+/* ── Drawing menu items (custom layout with rename/delete) ────────── */
+.drawing-menu-item {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 4px 8px !important;
+  gap: 4px !important;
+  min-height: 32px !important;
+}
+
+.drawing-menu-select {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: none;
+  border: none;
+  color: #D4C5A0;
+  font-size: 0.85rem;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 4px;
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+  transition: background 200ms ease;
+}
+
+.drawing-menu-select:hover {
+  background: rgba(212, 175, 55, 0.06);
+}
+
+.drawing-menu-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.drawing-menu-actions {
+  display: flex;
+  gap: 2px;
+  opacity: 0;
+  transition: opacity 200ms ease;
+  flex-shrink: 0;
+}
+
+.drawing-menu-item:hover .drawing-menu-actions {
+  opacity: 1;
+}
+
+.drawing-menu-action {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  background: none;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  color: #9A9282;
+  transition: all 200ms ease;
+}
+
+.drawing-menu-action:hover {
+  background: rgba(212, 197, 160, 0.1);
+  color: #E9DFB4;
+}
+
+.drawing-menu-delete:hover {
+  background: rgba(239, 68, 68, 0.12);
+  color: #f87171;
+}
+
 /* ── Color picker swatches — protect from theme overrides ─────────
    Excalidraw's color swatches use inline --swatch-color and
    filter: var(--theme-filter). Our brand overrides must NOT bleed

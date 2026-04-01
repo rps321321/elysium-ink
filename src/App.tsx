@@ -37,7 +37,8 @@ function AppInner() {
   const canvasContainerRef = useRef<HTMLDivElement>(null);
 
   const { drawings, activeDrawingId, isBooting } = useDrawings();
-  const { createDrawing, setActiveDrawing } = useDrawingsActions();
+  const { createDrawing, deleteDrawing, renameDrawing, setActiveDrawing } =
+    useDrawingsActions();
 
   // Drawing data state
   const [initialData, setInitialData] = useState<SavedDrawingData | null>(null);
@@ -221,19 +222,50 @@ function AppInner() {
                   }>
                     New Drawing
                   </MainMenu.Item>
-                  {drawings.map((d) => (
-                    <MainMenu.Item
-                      key={d.id}
-                      onSelect={() => { if (d.id !== activeDrawingId) setActiveDrawing(d.id); }}
-                      icon={
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill={d.id === activeDrawingId ? "#E9DFB4" : "none"} stroke={d.id === activeDrawingId ? "#E9DFB4" : "#9A9282"} strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="3"/></svg>
-                      }
-                    >
-                      <span style={{ color: d.id === activeDrawingId ? "#E9DFB4" : undefined }}>
-                        {d.name}
-                      </span>
-                    </MainMenu.Item>
-                  ))}
+                  {drawings.map((d) => {
+                    const isActive = d.id === activeDrawingId;
+                    return (
+                      <MainMenu.ItemCustom key={d.id} className="drawing-menu-item">
+                        <button
+                          className="drawing-menu-select"
+                          onClick={() => { if (!isActive) setActiveDrawing(d.id); }}
+                          style={{ color: isActive ? "#E9DFB4" : undefined, fontWeight: isActive ? 600 : 400 }}
+                        >
+                          <svg width="14" height="14" viewBox="0 0 24 24" fill={isActive ? "#E9DFB4" : "none"} stroke={isActive ? "#E9DFB4" : "#9A9282"} strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="3"/></svg>
+                          <span className="drawing-menu-name">{d.name}</span>
+                        </button>
+                        <div className="drawing-menu-actions">
+                          <button
+                            className="drawing-menu-action"
+                            title="Rename"
+                            aria-label={`Rename ${d.name}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const newName = prompt("Rename drawing:", d.name);
+                              if (newName && newName.trim()) renameDrawing(d.id, newName.trim());
+                            }}
+                          >
+                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+                          </button>
+                          {drawings.length > 1 && (
+                            <button
+                              className="drawing-menu-action drawing-menu-delete"
+                              title="Delete"
+                              aria-label={`Delete ${d.name}`}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (confirm(`Delete "${d.name}"? This cannot be undone.`)) {
+                                  deleteDrawing(d.id);
+                                }
+                              }}
+                            >
+                              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                            </button>
+                          )}
+                        </div>
+                      </MainMenu.ItemCustom>
+                    );
+                  })}
                 </MainMenu.Group>
                 <MainMenu.Separator />
 
