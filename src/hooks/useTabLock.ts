@@ -1,38 +1,53 @@
 /**
- * useTabLock.ts — BroadcastChannel-based tab locking.
- * Prevents multiple tabs from simultaneously editing the same drawing,
- * which would cause IndexedDB overwrite corruption.
+ * useTabLock.ts — Web Locks API-based tab singleton.
+ *
+ * Uses navigator.locks.request() with ifAvailable to atomically
+ * acquire an exclusive lock. If another tab already holds the lock,
+ * acquisition fails instantly (no race condition). Falls back to
+ * always-unlocked if the Web Locks API is not available.
  */
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 
-const CHANNEL_NAME = "elysium-tab-lock";
+const LOCK_NAME = "elysium-tab-lock";
 
-export function useTabLock() {
+export function useTabLock(): boolean {
     const [isLocked, setIsLocked] = useState(false);
-    const channelRef = useRef<BroadcastChannel | null>(null);
 
     useEffect(() => {
-        const channel = new BroadcastChannel(CHANNEL_NAME);
-        channelRef.current = channel;
+        // Web Locks API not available — allow the tab
+        if (!navigator.locks) return;
 
-        // Announce this tab is alive
-        channel.postMessage({ type: "TAB_OPEN" });
+        let released = false;
 
-        channel.onmessage = (event) => {
-            if (event.data?.type === "TAB_OPEN") {
-                // Another tab just opened — tell it we already exist
-                channel.postMessage({ type: "TAB_EXISTS" });
+        navigator.locks.request(
+            LOCK_NAME,
+            { ifAvailable: true },
+            (lock) => {
+                if (!lock) {
+                    // Another tab already holds the lock
+                    setIsLocked(true);
+                    return;
+                }
+
+                // We acquired the lock — hold it until this tab closes.
+                // Returning a never-resolving promise keeps the lock held.
+                return new Promise<void>((resolve) => {
+                    // Resolve on cleanup (tab close / React unmount)
+                    const check = () => {
+                        if (released) resolve();
+                    };
+                    const interval = setInterval(check, 200);
+                    // Also resolve immediately if already released
+                    check();
+                    // Store cleanup for the effect
+                    void interval;
+                });
             }
-            if (event.data?.type === "TAB_EXISTS") {
-                // We are the new tab and another one already exists
-                setIsLocked(true);
-            }
-        };
+        );
 
         return () => {
-            channel.close();
-            channelRef.current = null;
+            released = true;
         };
     }, []);
 

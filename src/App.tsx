@@ -40,8 +40,7 @@ function AppInner() {
   const canvasContainerRef = useRef<HTMLDivElement>(null);
 
   const { drawings, activeDrawingId, isBooting } = useDrawings();
-  const { createDrawing, deleteDrawing, renameDrawing, setActiveDrawing } =
-    useDrawingsActions();
+  const { createDrawing, setActiveDrawing } = useDrawingsActions();
 
   // Drawing data state
   const [initialData, setInitialData] = useState<SavedDrawingData | null>(null);
@@ -64,14 +63,16 @@ function AppInner() {
   useEffect(() => {
     if (texture === "none" || !excalidrawAPI) return;
     let raf: number;
+    let paused = document.hidden;
+
     const sync = () => {
+      if (paused) return;
       const el = textureRef.current;
       if (!el || !excalidrawAPI) return;
       const state = excalidrawAPI.getAppState();
       const zoom = state.zoom.value;
       const sx = state.scrollX;
       const sy = state.scrollY;
-      el.style.backgroundSize = "";  // reset to let CSS class control base size
       el.style.transform = `scale(${zoom})`;
       el.style.transformOrigin = "0 0";
       el.style.backgroundPosition = `${sx * zoom}px ${sy * zoom}px`;
@@ -79,8 +80,18 @@ function AppInner() {
       el.style.height = `${100 / zoom}%`;
       raf = requestAnimationFrame(sync);
     };
+
+    const onVisibility = () => {
+      paused = document.hidden;
+      if (!paused) raf = requestAnimationFrame(sync);
+    };
+
+    document.addEventListener("visibilitychange", onVisibility);
     raf = requestAnimationFrame(sync);
-    return () => cancelAnimationFrame(raf);
+    return () => {
+      cancelAnimationFrame(raf);
+      document.removeEventListener("visibilitychange", onVisibility);
+    };
   }, [texture, excalidrawAPI]);
 
   // Library browser modal

@@ -111,9 +111,8 @@ export function strokeToDataUrl(
     `<path d="${pathData}" fill="${settings.color}" fill-opacity="${alpha}"/>` +
     `</svg>`;
 
-  // btoa requires ASCII; encodeURIComponent + unescape handles Unicode safely
-  const b64 = btoa(unescape(encodeURIComponent(svg)));
-  return `data:image/svg+xml;base64,${b64}`;
+  // Use encodeURIComponent data URL — avoids deprecated unescape()/btoa()
+  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 }
 
 // ─── Coordinate conversion ────────────────────────────────────────

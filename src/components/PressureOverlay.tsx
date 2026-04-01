@@ -209,6 +209,7 @@ export default function PressureOverlay({
                 ? "Pressure pen active — click to disable"
                 : "Enable pressure pen mode"
             }
+            aria-label={enabled ? "Disable pressure pen" : "Enable pressure pen"}
           >
             <PenIcon />
           </button>
@@ -218,6 +219,7 @@ export default function PressureOverlay({
               className={`pen-btn pen-settings-btn ${showPanel ? "active" : ""}`}
               onClick={() => setShowPanel((v) => !v)}
               title="Pen settings"
+              aria-label="Pen settings"
             >
               <SettingsIcon />
             </button>

@@ -82,10 +82,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: all 200ms ease;
-}
-
-.lib-browser-close {
     transition:
         transform 250ms cubic-bezier(0.34, 1.56, 0.64, 1),
         box-shadow 250ms ease,
@@ -147,9 +143,8 @@
 }
 
 .lib-browser-body::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #E9DFB4 0%, #F0B429 100%);
+    background: linear-gradient(180deg, rgba(233, 223, 180, 0.4) 0%, rgba(240, 180, 41, 0.4) 100%);
     border-radius: 4px;
-    opacity: 0.4;
 }
 
 /* ─── Status Messages ──────────────────────────────────────────── */

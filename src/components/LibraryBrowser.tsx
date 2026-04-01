@@ -98,7 +98,7 @@ export default function LibraryBrowser({ onClose, excalidrawAPI }: LibraryBrowse
                     setInstallingId(null);
                     return;
                 }
-                if (!directory || !directory[lib.source]) {
+                if (!directory[lib.source]) {
                     throw new Error(`Library "${lib.name}" not found in preload directory`);
                 }
 
@@ -127,6 +127,7 @@ export default function LibraryBrowser({ onClose, excalidrawAPI }: LibraryBrowse
                 setInstalledIds((prev) => new Set(prev).add(key));
             } catch (err) {
                 console.error("Failed to install library:", err);
+                alert(`Failed to install "${lib.name}". ${(err as Error).message || "Please try again."}`);
             } finally {
                 setInstallingId(null);
             }
@@ -150,7 +151,7 @@ export default function LibraryBrowser({ onClose, excalidrawAPI }: LibraryBrowse
                 <div className="lib-browser-header">
                     <div className="lib-browser-title-row">
                         <h2>📚 Browse Libraries</h2>
-                        <button className="lib-browser-close" onClick={onClose} title="Close">
+                        <button className="lib-browser-close" onClick={onClose} title="Close" aria-label="Close">
                             ✕
                         </button>
                     </div>

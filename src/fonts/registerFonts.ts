@@ -63,8 +63,10 @@ export function initCustomFonts() {
 
     injectFontFaces();
 
-    console.log(
-        `[Elysium] Injected CSS @font-face for ${CUSTOM_FONTS.length} custom fonts:`,
-        CUSTOM_FONTS.map((f) => f.name)
-    );
+    if (import.meta.env.DEV) {
+        console.log(
+            `[Elysium] Injected CSS @font-face for ${CUSTOM_FONTS.length} custom fonts:`,
+            CUSTOM_FONTS.map((f) => f.name)
+        );
+    }
 }
