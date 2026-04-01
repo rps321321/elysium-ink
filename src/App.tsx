@@ -209,6 +209,7 @@ function AppInner() {
                   }
                   : undefined
               }
+              theme="dark"
               onChange={handleChange}
               onLibraryChange={handleLibraryChange}
               viewModeEnabled={viewMode}
