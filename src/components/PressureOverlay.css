@@ -34,28 +34,30 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 1.5px solid rgba(255, 255, 255, 0.1);
-  background: rgba(12, 12, 18, 0.9);
-  color: #a1a1aa;
+  border: 1.5px solid rgba(212, 197, 160, 0.1);
+  background: rgba(5, 16, 19, 0.92);
+  color: #8B93A7;
   cursor: pointer;
   transition: background 160ms ease, color 160ms ease, border-color 160ms ease,
     box-shadow 160ms ease;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
 }
 
 .pen-btn:hover {
-  background: rgba(28, 28, 40, 0.95);
-  color: #e4e4e7;
-  border-color: rgba(255, 255, 255, 0.18);
+  background: rgba(7, 20, 23, 0.96);
+  color: #D4C5A0;
+  border-color: rgba(212, 197, 160, 0.2);
 }
 
 .pen-btn.active {
-  background: rgba(99, 102, 241, 0.18);
-  color: #818cf8;
-  border-color: rgba(99, 102, 241, 0.5);
-  box-shadow: 0 2px 14px rgba(99, 102, 241, 0.28);
+  background: rgba(212, 175, 55, 0.12);
+  color: #E9DFB4;
+  border-color: rgba(233, 223, 180, 0.45);
+  box-shadow:
+    0 2px 14px rgba(212, 175, 55, 0.25),
+    0 0 20px rgba(212, 175, 55, 0.1);
 }
 
 /* Slightly smaller settings button */
@@ -71,22 +73,25 @@
   gap: 12px;
   width: 218px;
   padding: 14px 16px 16px;
-  background: rgba(12, 12, 18, 0.94);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(5, 16, 19, 0.95);
+  border: 1px solid rgba(212, 197, 160, 0.09);
   border-radius: 12px;
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  box-shadow: 0 8px 36px rgba(0, 0, 0, 0.55);
+  box-shadow:
+    0 8px 36px rgba(0, 0, 0, 0.6),
+    0 0 20px rgba(212, 175, 55, 0.04);
 }
 
 .pen-panel-title {
   font-size: 0.7rem;
   font-weight: 600;
-  letter-spacing: 0.07em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #52525b;
+  color: rgba(212, 197, 160, 0.35);
   padding-bottom: 4px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(212, 197, 160, 0.06);
+  font-family: "Cormorant Garamond", Georgia, serif;
 }
 
 /* ─── Individual controls ────────────────────────────────────────*/
@@ -105,12 +110,12 @@
 .pen-label {
   font-size: 0.8rem;
   font-weight: 500;
-  color: #a1a1aa;
+  color: #8B93A7;
 }
 
 .pen-value {
   font-size: 0.72rem;
-  color: #52525b;
+  color: rgba(212, 197, 160, 0.4);
   font-variant-numeric: tabular-nums;
 }
 
@@ -120,7 +125,7 @@
   appearance: none;
   width: 100%;
   height: 3px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(212, 197, 160, 0.1);
   border-radius: 2px;
   outline: none;
   cursor: pointer;
@@ -132,8 +137,8 @@
   width: 15px;
   height: 15px;
   border-radius: 50%;
-  background: #6366f1;
-  border: 2px solid rgba(255, 255, 255, 0.15);
+  background: linear-gradient(135deg, #E9DFB4 0%, #F0B429 100%);
+  border: 2px solid rgba(5, 16, 19, 0.6);
   cursor: pointer;
   transition: transform 120ms ease;
 }
@@ -146,8 +151,8 @@
   width: 15px;
   height: 15px;
   border-radius: 50%;
-  background: #6366f1;
-  border: 2px solid rgba(255, 255, 255, 0.15);
+  background: linear-gradient(135deg, #E9DFB4 0%, #F0B429 100%);
+  border: 2px solid rgba(5, 16, 19, 0.6);
   cursor: pointer;
 }
 
@@ -156,9 +161,9 @@
   width: 100%;
   height: 30px;
   padding: 2px 3px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(212, 197, 160, 0.1);
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(212, 197, 160, 0.04);
   cursor: pointer;
 }
 
@@ -175,10 +180,10 @@
 .pen-reset-btn {
   width: 100%;
   padding: 6px 10px;
-  background: rgba(255, 255, 255, 0.04);
-  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(212, 197, 160, 0.04);
+  border: 1px solid rgba(212, 197, 160, 0.07);
   border-radius: 6px;
-  color: #71717a;
+  color: rgba(212, 197, 160, 0.4);
   font-size: 0.75rem;
   font-family: inherit;
   cursor: pointer;
@@ -186,14 +191,14 @@
 }
 
 .pen-reset-btn:hover {
-  background: rgba(255, 255, 255, 0.08);
-  color: #a1a1aa;
+  background: rgba(212, 197, 160, 0.08);
+  color: #8B93A7;
 }
 
 /* Hint text */
 .pen-hint {
   font-size: 0.7rem;
-  color: #3f3f46;
+  color: rgba(212, 197, 160, 0.2);
   line-height: 1.5;
   margin: 0;
 }

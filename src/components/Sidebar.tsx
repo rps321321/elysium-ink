@@ -62,10 +62,10 @@ export default function Sidebar({
                 <h1 className="sidebar-title">
                     <img
                         src="./elysium-icon.png"
-                        alt="Elysium Creative Studio"
+                        alt="Elysium Ink"
                         className="sidebar-logo-img"
                     />{" "}
-                    Elysium Creative Studio
+                    Elysium Ink
                 </h1>
             </div>
 

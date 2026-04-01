@@ -1,12 +1,12 @@
 {
-  "name": "Elysium Creative Studio",
-  "short_name": "Elysium",
+  "name": "Elysium Ink",
+  "short_name": "Elysium Ink",
   "description": "Unlimited canvas for diagrams and sketches — with pressure-sensitive pen support.",
   "start_url": "/",
   "display": "standalone",
   "orientation": "any",
-  "background_color": "#1a1a2e",
-  "theme_color": "#1a1a2e",
+  "background_color": "#010E11",
+  "theme_color": "#010E11",
   "icons": [
     {
       "src": "/elysium-icon.png",

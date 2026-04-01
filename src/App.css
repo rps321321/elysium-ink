@@ -1,23 +1,50 @@
 /* ─── Global Reset & Variables ──────────────────────────────────── */
 :root {
   --sidebar-width: 280px;
-  --sidebar-bg: #0f0f14;
-  --sidebar-border: rgba(255, 255, 255, 0.06);
-  --sidebar-hover: rgba(255, 255, 255, 0.06);
-  --sidebar-active: rgba(99, 102, 241, 0.15);
-  --sidebar-active-border: #6366f1;
-  --accent: #6366f1;
-  --accent-hover: #818cf8;
-  --danger: #ef4444;
+
+  /* Elysium brand — deep teal palette */
+  --bg-deepest:    #010E11;
+  --bg-sidebar:    #051619;
+  --bg-elevated:   #071417;
+  --bg-aegean:     #0F4A4A;
+
+  /* Gold accent system */
+  --gold:          #E9DFB4;
+  --gold-hover:    #F0B429;
+  --gold-classic:  #D4AF37;
+
+  /* Text */
+  --text-primary:   #D4C5A0;
+  --text-secondary: #8B93A7;
+  --text-muted:     rgba(212, 197, 160, 0.35);
+
+  /* Borders */
+  --border-subtle:  rgba(212, 197, 160, 0.07);
+  --border-mid:     rgba(212, 197, 160, 0.12);
+
+  /* Sidebar */
+  --sidebar-bg:           var(--bg-sidebar);
+  --sidebar-border:       var(--border-subtle);
+  --sidebar-hover:        rgba(212, 197, 160, 0.05);
+  --sidebar-active:       rgba(212, 175, 55, 0.08);
+  --sidebar-active-border: var(--gold);
+
+  /* Accents (mapped to gold for button/focus reuse) */
+  --accent:       var(--gold);
+  --accent-hover: var(--gold-hover);
+
+  /* Danger */
+  --danger:       #ef4444;
   --danger-hover: #f87171;
-  --text-primary: #e4e4e7;
-  --text-secondary: #a1a1aa;
-  --text-muted: #71717a;
-  --btn-bg: rgba(255, 255, 255, 0.06);
-  --btn-hover: rgba(255, 255, 255, 0.1);
-  --radius: 8px;
+
+  /* Buttons */
+  --btn-bg:    rgba(212, 197, 160, 0.05);
+  --btn-hover: rgba(212, 197, 160, 0.09);
+
+  --radius:    8px;
   --radius-sm: 6px;
   --transition: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
@@ -35,7 +62,13 @@ body,
   height: 100%;
   width: 100%;
   overflow: hidden;
-  background: #1a1a2e;
+  /* Deep space radial gradient — Elysium brand */
+  background: radial-gradient(ellipse at center,
+    #071417 0%,
+    #051619 40%,
+    #030F11 70%,
+    #010A0C 100%
+  );
 }
 
 /* ─── App Container ─────────────────────────────────────────────── */
@@ -51,7 +84,9 @@ body,
   width: var(--sidebar-width);
   min-width: var(--sidebar-width);
   height: 100%;
-  background: var(--sidebar-bg);
+  background: rgba(5, 16, 19, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-right: 1px solid var(--sidebar-border);
   display: flex;
   flex-direction: column;
@@ -74,11 +109,12 @@ body,
 .sidebar-title {
   font-size: 1rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--gold);
+  font-family: "Cormorant Garamond", Georgia, serif;
+  letter-spacing: 0.04em;
   display: flex;
   align-items: center;
   gap: 8px;
-  letter-spacing: -0.01em;
 }
 
 .sidebar-logo-img {
@@ -109,8 +145,9 @@ body,
 }
 
 .drawings-list::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
+  background: linear-gradient(180deg, #E9DFB4 0%, #F0B429 100%);
   border-radius: 4px;
+  opacity: 0.4;
 }
 
 .drawing-item {
@@ -120,7 +157,7 @@ body,
   padding: 8px 10px;
   border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: background var(--transition);
+  transition: background var(--transition), color var(--transition);
   color: var(--text-secondary);
   font-size: 0.85rem;
   border-left: 3px solid transparent;
@@ -134,8 +171,8 @@ body,
 
 .drawing-item.active {
   background: var(--sidebar-active);
-  border-left-color: var(--sidebar-active-border);
-  color: var(--text-primary);
+  border-left-color: var(--gold);
+  color: var(--gold);
   font-weight: 500;
 }
 
@@ -150,8 +187,8 @@ body,
 .rename-input {
   flex: 1;
   min-width: 0;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid var(--accent);
+  background: rgba(212, 197, 160, 0.06);
+  border: 1px solid var(--gold);
   border-radius: var(--radius-sm);
   color: var(--text-primary);
   padding: 3px 6px;
@@ -178,54 +215,60 @@ body,
 }
 
 .btn-primary {
-  background: var(--accent);
-  color: white;
+  background: linear-gradient(135deg, #E9DFB4 0%, #F0B429 100%);
+  color: #051619;
+  font-weight: 700;
+  box-shadow: 0 4px 15px rgba(212, 175, 55, 0.35);
 }
 
 .btn-primary:hover {
-  background: var(--accent-hover);
+  background: linear-gradient(135deg, #F0B429 0%, #E9DFB4 100%);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+  box-shadow: 0 6px 20px rgba(240, 180, 41, 0.5);
 }
 
 .btn-export,
 .btn-import {
   background: var(--btn-bg);
   color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
 }
 
 .btn-export:hover,
 .btn-import:hover {
   background: var(--btn-hover);
   color: var(--text-primary);
+  border-color: var(--border-mid);
 }
 
 .btn-browse-libs {
-  background: rgba(99, 102, 241, 0.12);
-  color: #818cf8;
-  border: 1px solid rgba(99, 102, 241, 0.2);
+  background: rgba(212, 175, 55, 0.08);
+  color: var(--gold);
+  border: 1px solid rgba(212, 175, 55, 0.2);
 }
 
 .btn-browse-libs:hover {
-  background: rgba(99, 102, 241, 0.22);
-  color: #a5b4fc;
-  border-color: rgba(99, 102, 241, 0.35);
+  background: rgba(212, 175, 55, 0.15);
+  color: var(--gold-hover);
+  border-color: rgba(240, 180, 41, 0.4);
 }
 
 .btn-view-mode {
   background: var(--btn-bg);
   color: var(--text-secondary);
+  border: 1px solid var(--border-subtle);
 }
 
 .btn-view-mode:hover {
   background: var(--btn-hover);
   color: var(--text-primary);
+  border-color: var(--border-mid);
 }
 
 .btn-view-mode.active {
-  background: rgba(239, 68, 68, 0.15);
+  background: rgba(239, 68, 68, 0.12);
   color: #f87171;
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  border: 1px solid rgba(239, 68, 68, 0.28);
 }
 
 .btn-icon {
@@ -251,7 +294,7 @@ body,
 
 .btn-delete:hover {
   color: var(--danger);
-  background: rgba(239, 68, 68, 0.15);
+  background: rgba(239, 68, 68, 0.12);
 }
 
 /* ─── Sidebar Bottom ────────────────────────────────────────────── */
@@ -270,7 +313,7 @@ body,
   top: 50%;
   transform: translateY(-50%);
   z-index: 200;
-  background: var(--sidebar-bg);
+  background: rgba(5, 16, 19, 0.9);
   border: 1px solid var(--sidebar-border);
   border-left: none;
   color: var(--text-muted);
@@ -286,8 +329,8 @@ body,
 }
 
 .sidebar-toggle:hover {
-  color: var(--text-primary);
-  background: rgba(255, 255, 255, 0.05);
+  color: var(--gold);
+  background: rgba(212, 175, 55, 0.06);
 }
 
 /* ─── Canvas Container ──────────────────────────────────────────── */
@@ -311,14 +354,19 @@ body,
   gap: 16px;
   color: var(--text-muted);
   font-size: 0.9rem;
-  background: #1a1a2e;
+  background: radial-gradient(ellipse at center,
+    #071417 0%,
+    #051619 40%,
+    #030F11 70%,
+    #010A0C 100%
+  );
 }
 
 .loading-spinner {
   width: 36px;
   height: 36px;
-  border: 3px solid rgba(99, 102, 241, 0.15);
-  border-top-color: var(--accent);
+  border: 3px solid rgba(212, 175, 55, 0.12);
+  border-top-color: var(--gold);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -333,7 +381,11 @@ body,
 .tab-lock-overlay {
   position: fixed;
   inset: 0;
-  background: linear-gradient(135deg, #0f0f14 0%, #1a1a2e 50%, #16162a 100%);
+  background: radial-gradient(ellipse at center,
+    #071417 0%,
+    #051619 50%,
+    #010A0C 100%
+  );
   display: flex;
   align-items: center;
   justify-content: center;
@@ -344,10 +396,14 @@ body,
   text-align: center;
   max-width: 420px;
   padding: 48px 40px;
-  background: rgba(255, 255, 255, 0.03);
-  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(7, 20, 23, 0.6);
+  border: 1px solid rgba(212, 197, 160, 0.08);
   border-radius: 16px;
   backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.5),
+    0 0 20px rgba(212, 175, 55, 0.04);
 }
 
 .tab-lock-icon {
@@ -358,7 +414,9 @@ body,
 .tab-lock-card h1 {
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--text-primary);
+  color: var(--gold);
+  font-family: "Cormorant Garamond", Georgia, serif;
+  letter-spacing: 0.03em;
   margin-bottom: 12px;
 }
 

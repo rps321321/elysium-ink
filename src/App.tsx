@@ -126,7 +126,7 @@ function AppInner() {
           <div className="tab-lock-icon">🔒</div>
           <h1>Tab Locked</h1>
           <p>
-            Elysium Creative Studio is already open in another tab. Opening multiple
+            Elysium Ink is already open in another tab. Opening multiple
             tabs simultaneously can cause data corruption.
           </p>
           <p>Please close this tab and return to the existing one.</p>
@@ -140,7 +140,7 @@ function AppInner() {
     return (
       <div className="loading-screen">
         <div className="loading-spinner" />
-        <p>Initializing Elysium Creative Studio…</p>
+        <p>Initializing Elysium Ink…</p>
       </div>
     );
   }
@@ -222,12 +222,12 @@ function AppInner() {
                   <WelcomeScreen.Center.Logo>
                     <img
                       src="./elysium-icon.png"
-                      alt="Elysium Creative Studio"
+                      alt="Elysium Ink"
                       style={{ width: 72, height: 72, borderRadius: 12 }}
                     />
                   </WelcomeScreen.Center.Logo>
                   <WelcomeScreen.Center.Heading>
-                    Elysium Creative Studio
+                    Elysium Ink
                   </WelcomeScreen.Center.Heading>
                   <WelcomeScreen.Hints.ToolbarHint />
                   <WelcomeScreen.Hints.MenuHint />
