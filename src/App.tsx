@@ -44,6 +44,13 @@ function AppInner() {
   const [initialData, setInitialData] = useState<SavedDrawingData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
+  // Inline rename state
+  const [renamingId, setRenamingId] = useState<string | null>(null);
+  const [renameValue, setRenameValue] = useState("");
+
+  // Delete confirmation state
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
   // View mode toggle
   const [viewMode, setViewMode] = useState(false);
 
@@ -224,6 +231,60 @@ function AppInner() {
                   </MainMenu.Item>
                   {drawings.map((d) => {
                     const isActive = d.id === activeDrawingId;
+                    const isRenaming = renamingId === d.id;
+                    const isDeleting = deletingId === d.id;
+
+                    // ── Delete confirmation row ──
+                    if (isDeleting) {
+                      return (
+                        <MainMenu.ItemCustom key={d.id} className="drawing-menu-item drawing-menu-confirm">
+                          <span className="drawing-confirm-text">Delete "{d.name}"?</span>
+                          <div className="drawing-confirm-actions">
+                            <button
+                              className="drawing-confirm-btn drawing-confirm-yes"
+                              onClick={(e) => { e.stopPropagation(); deleteDrawing(d.id); setDeletingId(null); }}
+                            >
+                              Delete
+                            </button>
+                            <button
+                              className="drawing-confirm-btn drawing-confirm-no"
+                              onClick={(e) => { e.stopPropagation(); setDeletingId(null); }}
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </MainMenu.ItemCustom>
+                      );
+                    }
+
+                    // ── Inline rename row ──
+                    if (isRenaming) {
+                      return (
+                        <MainMenu.ItemCustom key={d.id} className="drawing-menu-item">
+                          <input
+                            className="drawing-rename-input"
+                            value={renameValue}
+                            autoFocus
+                            onChange={(e) => setRenameValue(e.target.value)}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                if (renameValue.trim()) renameDrawing(d.id, renameValue.trim());
+                                setRenamingId(null);
+                              }
+                              if (e.key === "Escape") setRenamingId(null);
+                              e.stopPropagation();
+                            }}
+                            onBlur={() => {
+                              if (renameValue.trim()) renameDrawing(d.id, renameValue.trim());
+                              setRenamingId(null);
+                            }}
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                        </MainMenu.ItemCustom>
+                      );
+                    }
+
+                    // ── Normal drawing row ──
                     return (
                       <MainMenu.ItemCustom key={d.id} className="drawing-menu-item">
                         <button
@@ -241,8 +302,8 @@ function AppInner() {
                             aria-label={`Rename ${d.name}`}
                             onClick={(e) => {
                               e.stopPropagation();
-                              const newName = prompt("Rename drawing:", d.name);
-                              if (newName && newName.trim()) renameDrawing(d.id, newName.trim());
+                              setRenameValue(d.name);
+                              setRenamingId(d.id);
                             }}
                           >
                             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
@@ -254,9 +315,7 @@ function AppInner() {
                               aria-label={`Delete ${d.name}`}
                               onClick={(e) => {
                                 e.stopPropagation();
-                                if (confirm(`Delete "${d.name}"? This cannot be undone.`)) {
-                                  deleteDrawing(d.id);
-                                }
+                                setDeletingId(d.id);
                               }}
                             >
                               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
