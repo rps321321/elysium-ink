@@ -563,6 +563,11 @@ body,
   transition: transform 80ms ease !important;
 }
 
+/* ── Help dialog — hide Excalidraw external links ────────────────── */
+.excalidraw .HelpDialog__header {
+  display: none !important;
+}
+
 /* ── Dropdown menus / context menus ──────────────────────────────── */
 .excalidraw .dropdown-menu,
 .excalidraw .context-menu {
