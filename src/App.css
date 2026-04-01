@@ -1,11 +1,5 @@
 /* ─── Global Reset & Variables ──────────────────────────────────── */
 :root {
-  /* Elysium brand — deep teal palette */
-  --bg-deepest:    #010E11;
-  --bg-sidebar:    #051619;
-  --bg-elevated:   #071417;
-  --bg-aegean:     #0F4A4A;
-
   /* Gold accent system */
   --gold:          #E9DFB4;
   --gold-hover:    #F0B429;
@@ -68,11 +62,6 @@ body,
   height: 100%;
   width: 100%;
   position: relative;
-}
-
-/* ─── Full-canvas layout ───────────────────────────────────────── */
-.app-fullcanvas {
-  flex-direction: column;
 }
 
 /* ─── Canvas Container ──────────────────────────────────────────── */

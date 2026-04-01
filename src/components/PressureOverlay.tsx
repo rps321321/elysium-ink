@@ -306,13 +306,15 @@ function RangeControl({
   display: string;
   onChange: (v: number) => void;
 }) {
+  const inputId = `pen-range-${label.toLowerCase().replace(/\s+/g, "-")}`;
   return (
     <div className="pen-control">
       <div className="pen-control-header">
-        <span className="pen-label">{label}</span>
+        <label htmlFor={inputId} className="pen-label">{label}</label>
         <span className="pen-value">{display}</span>
       </div>
       <input
+        id={inputId}
         type="range"
         min={min}
         max={max}

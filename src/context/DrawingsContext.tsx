@@ -207,7 +207,9 @@ export function DrawingsProvider({ children }: { children: ReactNode }) {
         const serialized = JSON.stringify(state.drawings);
         if (serialized === prevDrawingsRef.current) return; // no change
         prevDrawingsRef.current = serialized;
-        saveDrawingsIndex(state.drawings);
+        saveDrawingsIndex(state.drawings).catch((err) =>
+            console.error("Failed to persist drawings index:", err)
+        );
     }, [state.drawings, state.isBooting]);
 
     // Side-effect: clean up DB when a drawing is deleted

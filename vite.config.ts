@@ -17,7 +17,6 @@ export default defineConfig({
         // and reduced initial bundle size (Context7 + ViteConf 2024 best practice)
         manualChunks: {
           vendor: ['react', 'react-dom'],
-          excalidraw: ['@excalidraw/excalidraw'],
         },
       },
     },

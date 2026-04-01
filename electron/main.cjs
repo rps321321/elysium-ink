@@ -160,7 +160,7 @@ ipcMain.handle("file:write", async (_event, filePath, data) => {
         return { success: true };
     } catch (err) {
         console.error("Failed to write file:", err);
-        return { success: false, error: err.message };
+        return { success: false, error: err instanceof Error ? err.message : String(err) };
     }
 });
 

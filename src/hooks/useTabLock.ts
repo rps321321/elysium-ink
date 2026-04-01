@@ -33,18 +33,16 @@ export function useTabLock(): boolean {
                 // We acquired the lock — hold it until this tab closes.
                 // Returning a never-resolving promise keeps the lock held.
                 return new Promise<void>((resolve) => {
-                    // Resolve on cleanup (tab close / React unmount)
-                    const check = () => {
-                        if (released) resolve();
-                    };
-                    const interval = setInterval(check, 200);
-                    // Also resolve immediately if already released
-                    check();
-                    // Store cleanup for the effect
-                    void interval;
+                    const interval = setInterval(() => {
+                        if (released) {
+                            clearInterval(interval);
+                            resolve();
+                        }
+                    }, 200);
+                    if (released) { clearInterval(interval); resolve(); }
                 });
             }
-        );
+        ).catch(() => {/* lock request failed — allow tab */});
 
         return () => {
             released = true;

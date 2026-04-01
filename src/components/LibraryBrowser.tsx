@@ -135,6 +135,12 @@ export default function LibraryBrowser({ onClose, excalidrawAPI }: LibraryBrowse
         [excalidrawAPI]
     );
 
+    // ─── Restore focus on close ─────────────────────────────────────
+    useEffect(() => {
+        const previousFocus = document.activeElement as HTMLElement | null;
+        return () => { previousFocus?.focus(); };
+    }, []);
+
     // ─── Close on Escape ───────────────────────────────────────────
     useEffect(() => {
         const handler = (e: KeyboardEvent) => {
@@ -146,11 +152,11 @@ export default function LibraryBrowser({ onClose, excalidrawAPI }: LibraryBrowse
 
     return (
         <div className="lib-browser-overlay" onClick={onClose}>
-            <div className="lib-browser-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="lib-browser-modal" role="dialog" aria-modal="true" aria-labelledby="lib-browser-title" onClick={(e) => e.stopPropagation()}>
                 {/* ─── Header ─── */}
                 <div className="lib-browser-header">
                     <div className="lib-browser-title-row">
-                        <h2>📚 Browse Libraries</h2>
+                        <h2 id="lib-browser-title">📚 Browse Libraries</h2>
                         <button className="lib-browser-close" onClick={onClose} title="Close" aria-label="Close">
                             ✕
                         </button>
