@@ -236,7 +236,7 @@ function AppInner() {
                   loadScene: false,
                   saveToActiveFile: false,
                   export: { saveFileToDisk: true },
-                  toggleTheme: true,
+                  toggleTheme: false,
                 },
               }}
             >
@@ -402,7 +402,6 @@ function AppInner() {
                 <MainMenu.Separator />
 
                 {/* ─── Canvas settings ─── */}
-                <MainMenu.DefaultItems.ToggleTheme />
                 <MainMenu.DefaultItems.ChangeCanvasBackground />
               </MainMenu>
             </Excalidraw>
