@@ -9,7 +9,6 @@ import {
   loadDrawingData,
   type SavedDrawingData,
 } from "./hooks/usePersistentCanvas";
-import { useTabLock } from "./hooks/useTabLock";
 // Sidebar removed — all actions now live in Excalidraw's hamburger menu
 import { initCustomFonts } from "./fonts/registerFonts";
 
@@ -32,8 +31,6 @@ const PressureOverlay = lazy(() => import("./components/PressureOverlay"));
 
 // ─── Inner App (consumes DrawingsContext) ────────────────────────
 function AppInner() {
-  const isTabLocked = useTabLock();
-
   const [excalidrawAPI, setExcalidrawAPI] =
     useState<ExcalidrawImperativeAPI | null>(null);
 
@@ -160,23 +157,6 @@ function AppInner() {
   const openLibraryBrowser = useCallback(() => {
     setShowLibraryBrowser(true);
   }, []);
-
-  // ─── Tab locked state ──────────────────────────────────────────
-  if (isTabLocked) {
-    return (
-      <div className="tab-lock-overlay">
-        <div className="tab-lock-card">
-          <div className="tab-lock-icon">🔒</div>
-          <h1>Tab Locked</h1>
-          <p>
-            Elysium Ink is already open in another tab. Opening multiple
-            tabs simultaneously can cause data corruption.
-          </p>
-          <p>Please close this tab and return to the existing one.</p>
-        </div>
-      </div>
-    );
-  }
 
   // ─── Show boot loader while context initializes ────────────────
   if (isBooting) {
