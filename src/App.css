@@ -623,6 +623,53 @@ body,
   padding: 8px 12px 4px !important;
 }
 
+/* ── View mode segmented toggle ──────────────────────────────────── */
+.view-mode-toggle-row {
+  padding: 6px 10px !important;
+}
+
+.view-mode-toggle {
+  display: flex;
+  width: 100%;
+  background: rgba(212, 197, 160, 0.04);
+  border: 1px solid rgba(212, 197, 160, 0.1);
+  border-radius: 8px;
+  padding: 3px;
+  cursor: pointer;
+  font-family: inherit;
+  gap: 2px;
+}
+
+.view-mode-label {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: #9A9282;
+  transition:
+    background 250ms ease,
+    color 250ms ease,
+    box-shadow 250ms ease;
+}
+
+.view-mode-label.active {
+  background: rgba(212, 175, 55, 0.15);
+  color: #E9DFB4;
+  box-shadow:
+    0 2px 8px rgba(0, 0, 0, 0.2),
+    0 0 10px rgba(212, 175, 55, 0.08);
+}
+
+.view-mode-label:not(.active):hover {
+  color: #D4C5A0;
+  background: rgba(212, 197, 160, 0.06);
+}
+
 /* ── Drawing menu items (custom layout with rename/delete) ────────── */
 .drawing-menu-item {
   display: flex !important;

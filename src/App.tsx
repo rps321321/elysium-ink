@@ -365,15 +365,22 @@ function AppInner() {
                 }>
                   Import File
                 </MainMenu.Item>
-                <MainMenu.Item
-                  onSelect={() => setViewMode((v) => !v)}
-                  icon={viewMode
-                    ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                    : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
-                  }
-                >
-                  {viewMode ? "Read-Only Mode" : "Edit Mode"}
-                </MainMenu.Item>
+                <MainMenu.ItemCustom className="view-mode-toggle-row">
+                  <button
+                    className="view-mode-toggle"
+                    onClick={(e) => { e.stopPropagation(); setViewMode((v) => !v); }}
+                    aria-label={viewMode ? "Switch to Edit Mode" : "Switch to Read-Only Mode"}
+                  >
+                    <span className={`view-mode-label ${!viewMode ? "active" : ""}`}>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+                      Edit
+                    </span>
+                    <span className={`view-mode-label ${viewMode ? "active" : ""}`}>
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                      View
+                    </span>
+                  </button>
+                </MainMenu.ItemCustom>
                 <MainMenu.Separator />
 
                 {/* ─── Canvas — background color + surface texture ─── */}
