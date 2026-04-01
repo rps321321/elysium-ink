@@ -568,6 +568,23 @@ body,
   display: none !important;
 }
 
+/* ── Help dialog — keyboard shortcut badges ──────────────────────── */
+.excalidraw .HelpDialog__key {
+  background-color: rgba(212, 175, 55, 0.12) !important;
+  color: #E9DFB4 !important;
+  border: 1px solid rgba(212, 175, 55, 0.2) !important;
+}
+
+.excalidraw .HelpDialog__shortcut {
+  color: #D4C5A0 !important;
+}
+
+.excalidraw .HelpDialog__island h3 {
+  color: #E9DFB4 !important;
+  font-family: var(--font-heading) !important;
+  letter-spacing: 0.03em !important;
+}
+
 /* ── Dropdown menus / context menus ──────────────────────────────── */
 .excalidraw .dropdown-menu,
 .excalidraw .context-menu {
