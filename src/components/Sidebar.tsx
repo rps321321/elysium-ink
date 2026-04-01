@@ -13,21 +13,9 @@ import {
 
 interface SidebarProps {
     sidebarOpen: boolean;
-    onExportJSON: () => void;
-    onImportFile: () => void;
-    onOpenLibraryBrowser: () => void;
-    viewMode: boolean;
-    onToggleViewMode: () => void;
 }
 
-export default function Sidebar({
-    sidebarOpen,
-    onExportJSON,
-    onImportFile,
-    onOpenLibraryBrowser,
-    viewMode,
-    onToggleViewMode,
-}: SidebarProps) {
+export default function Sidebar({ sidebarOpen }: SidebarProps) {
     const { drawings, activeDrawingId } = useDrawings();
     const { createDrawing, deleteDrawing, renameDrawing, setActiveDrawing } =
         useDrawingsActions();
@@ -131,38 +119,6 @@ export default function Sidebar({
                 ))}
             </nav>
 
-            <div className="sidebar-bottom">
-                <button
-                    className="btn btn-export"
-                    onClick={onExportJSON}
-                    title="Export JSON Backup"
-                >
-                    💾 Export Backup
-                </button>
-                <button
-                    className="btn btn-import"
-                    onClick={onImportFile}
-                    title="Import .excalidraw file"
-                >
-                    📂 Import File
-                </button>
-                <button
-                    className="btn btn-browse-libs"
-                    onClick={onOpenLibraryBrowser}
-                    title="Browse community libraries"
-                >
-                    📚 Browse Libraries
-                </button>
-                <button
-                    className={`btn btn-view-mode ${viewMode ? "active" : ""}`}
-                    onClick={onToggleViewMode}
-                    title={
-                        viewMode ? "Switch to Edit Mode" : "Switch to Read-Only Mode"
-                    }
-                >
-                    {viewMode ? "🔒 Read-Only" : "✏️ Edit Mode"}
-                </button>
-            </div>
         </aside>
     );
 }

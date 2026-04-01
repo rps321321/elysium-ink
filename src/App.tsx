@@ -1,16 +1,16 @@
 import { useState, useEffect, useCallback, useRef, lazy, Suspense } from "react";
-import { loadSceneOrLibraryFromBlob, MIME_TYPES, MainMenu, WelcomeScreen } from "@excalidraw/excalidraw";
+import { loadSceneOrLibraryFromBlob, MIME_TYPES, MainMenu } from "@excalidraw/excalidraw";
 import type { ExcalidrawImperativeAPI } from "@excalidraw/excalidraw/types";
 import "@excalidraw/excalidraw/index.css";
 
-import { DrawingsProvider, useDrawings } from "./context/DrawingsContext";
+import { DrawingsProvider, useDrawings, useDrawingsActions } from "./context/DrawingsContext";
 import {
   usePersistentCanvas,
   loadDrawingData,
   type SavedDrawingData,
 } from "./hooks/usePersistentCanvas";
 import { useTabLock } from "./hooks/useTabLock";
-import Sidebar from "./components/Sidebar";
+// Sidebar removed — all actions now live in Excalidraw's hamburger menu
 import { initCustomFonts } from "./fonts/registerFonts";
 
 import "./App.css";
@@ -20,7 +20,7 @@ initCustomFonts();
 
 // ─── Lazy-load Excalidraw canvas (Context7 recommendation) ───────
 // The Excalidraw canvas component is the heaviest part (~5 MB).
-// MainMenu and WelcomeScreen remain static imports because they use
+// MainMenu remains a static import because it uses
 // compound component patterns (e.g. MainMenu.DefaultItems) that
 // React.lazy does not support.
 const Excalidraw = lazy(() =>
@@ -39,7 +39,9 @@ function AppInner() {
 
   const canvasContainerRef = useRef<HTMLDivElement>(null);
 
-  const { activeDrawingId, isBooting } = useDrawings();
+  const { drawings, activeDrawingId, isBooting } = useDrawings();
+  const { createDrawing, deleteDrawing, renameDrawing, setActiveDrawing } =
+    useDrawingsActions();
 
   // Drawing data state
   const [initialData, setInitialData] = useState<SavedDrawingData | null>(null);
@@ -48,8 +50,38 @@ function AppInner() {
   // View mode toggle
   const [viewMode, setViewMode] = useState(false);
 
-  // Sidebar toggle
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  // Canvas texture
+  const [texture, setTexture] = useState<string>(
+    () => localStorage.getItem("elysium-texture") || "none"
+  );
+  const applyTexture = useCallback((t: string) => {
+    setTexture(t);
+    localStorage.setItem("elysium-texture", t);
+  }, []);
+  const textureRef = useRef<HTMLDivElement>(null);
+
+  // ─── Sync texture overlay with Excalidraw zoom/scroll ──────────
+  useEffect(() => {
+    if (texture === "none" || !excalidrawAPI) return;
+    let raf: number;
+    const sync = () => {
+      const el = textureRef.current;
+      if (!el || !excalidrawAPI) return;
+      const state = excalidrawAPI.getAppState();
+      const zoom = state.zoom.value;
+      const sx = state.scrollX;
+      const sy = state.scrollY;
+      el.style.backgroundSize = "";  // reset to let CSS class control base size
+      el.style.transform = `scale(${zoom})`;
+      el.style.transformOrigin = "0 0";
+      el.style.backgroundPosition = `${sx * zoom}px ${sy * zoom}px`;
+      el.style.width = `${100 / zoom}%`;
+      el.style.height = `${100 / zoom}%`;
+      raf = requestAnimationFrame(sync);
+    };
+    raf = requestAnimationFrame(sync);
+    return () => cancelAnimationFrame(raf);
+  }, [texture, excalidrawAPI]);
 
   // Library browser modal
   const [showLibraryBrowser, setShowLibraryBrowser] = useState(false);
@@ -147,27 +179,8 @@ function AppInner() {
 
   // ─── Render ────────────────────────────────────────────────────
   return (
-    <div className="app-container">
-      {/* ─── Sidebar (extracted component) ─── */}
-      <Sidebar
-        sidebarOpen={sidebarOpen}
-        onExportJSON={exportJSON}
-        onImportFile={importFile}
-        onOpenLibraryBrowser={openLibraryBrowser}
-        viewMode={viewMode}
-        onToggleViewMode={() => setViewMode((v) => !v)}
-      />
-
-      {/* ─── Sidebar toggle ─── */}
-      <button
-        className="sidebar-toggle"
-        onClick={() => setSidebarOpen((o) => !o)}
-        title={sidebarOpen ? "Close sidebar" : "Open sidebar"}
-      >
-        {sidebarOpen ? "◀" : "▶"}
-      </button>
-
-      {/* ─── Canvas ─── */}
+    <div className="app-container app-fullcanvas">
+      {/* ─── Canvas (full screen) ─── */}
       <main className="canvas-container" ref={canvasContainerRef}>
         {isLoading ? (
           <div className="loading-screen">
@@ -209,33 +222,99 @@ function AppInner() {
               }}
             >
               <MainMenu>
+                {/* ─── Drawings ─── */}
+                <MainMenu.Group title="Drawings">
+                  <MainMenu.Item onSelect={createDrawing} icon={
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  }>
+                    New Drawing
+                  </MainMenu.Item>
+                  {drawings.map((d) => (
+                    <MainMenu.Item
+                      key={d.id}
+                      onSelect={() => { if (d.id !== activeDrawingId) setActiveDrawing(d.id); }}
+                      icon={
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill={d.id === activeDrawingId ? "#E9DFB4" : "none"} stroke={d.id === activeDrawingId ? "#E9DFB4" : "#9A9282"} strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="3"/></svg>
+                      }
+                    >
+                      <span style={{ color: d.id === activeDrawingId ? "#E9DFB4" : undefined }}>
+                        {d.name}
+                      </span>
+                    </MainMenu.Item>
+                  ))}
+                </MainMenu.Group>
+                <MainMenu.Separator />
+
+                {/* ─── File actions ─── */}
                 <MainMenu.DefaultItems.LoadScene />
                 <MainMenu.DefaultItems.SaveAsImage />
                 <MainMenu.DefaultItems.Export />
                 <MainMenu.DefaultItems.ClearCanvas />
                 <MainMenu.Separator />
+
+                {/* ─── Elysium tools ─── */}
+                <MainMenu.Item onSelect={exportJSON} icon={
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                }>
+                  Export Backup
+                </MainMenu.Item>
+                <MainMenu.Item onSelect={importFile} icon={
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/><line x1="12" y1="11" x2="12" y2="17"/><polyline points="9 14 12 11 15 14"/></svg>
+                }>
+                  Import File
+                </MainMenu.Item>
+                <MainMenu.Item onSelect={openLibraryBrowser} icon={
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+                }>
+                  Browse Libraries
+                </MainMenu.Item>
+                <MainMenu.Item
+                  onSelect={() => setViewMode((v) => !v)}
+                  icon={viewMode
+                    ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    : <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"/></svg>
+                  }
+                >
+                  {viewMode ? "Read-Only Mode" : "Edit Mode"}
+                </MainMenu.Item>
+                <MainMenu.Separator />
+
+                {/* ─── Surface texture ─── */}
+                <MainMenu.Group title="Surface">
+                  {([
+                    ["none", "Clean"],
+                    ["paper", "Paper"],
+                    ["canvas-weave", "Canvas"],
+                    ["parchment", "Parchment"],
+                    ["dot-grid", "Dot Grid"],
+                    ["blueprint", "Blueprint"],
+                  ] as const).map(([id, label]) => (
+                    <MainMenu.Item
+                      key={id}
+                      onSelect={() => applyTexture(id)}
+                      icon={
+                        <svg width="14" height="14" viewBox="0 0 16 16" fill={texture === id ? "#E9DFB4" : "none"} stroke={texture === id ? "#E9DFB4" : "currentColor"} strokeWidth="1.5"><rect x="1" y="1" width="14" height="14" rx="2"/></svg>
+                      }
+                    >
+                      <span style={{ color: texture === id ? "#E9DFB4" : undefined }}>
+                        {label}
+                      </span>
+                    </MainMenu.Item>
+                  ))}
+                </MainMenu.Group>
+                <MainMenu.Separator />
+
+                {/* ─── Canvas settings ─── */}
                 <MainMenu.DefaultItems.ToggleTheme />
                 <MainMenu.DefaultItems.ChangeCanvasBackground />
               </MainMenu>
-              <WelcomeScreen>
-                <WelcomeScreen.Center>
-                  <WelcomeScreen.Center.Logo>
-                    <img
-                      src="./elysium-icon.png"
-                      alt="Elysium Ink"
-                      style={{ width: 72, height: 72, borderRadius: 12 }}
-                    />
-                  </WelcomeScreen.Center.Logo>
-                  <WelcomeScreen.Center.Heading>
-                    Elysium Ink
-                  </WelcomeScreen.Center.Heading>
-                  <WelcomeScreen.Hints.ToolbarHint />
-                  <WelcomeScreen.Hints.MenuHint />
-                  <WelcomeScreen.Hints.HelpHint />
-                </WelcomeScreen.Center>
-              </WelcomeScreen>
             </Excalidraw>
           </Suspense>
+        )}
+
+        {/* ─── Canvas texture overlay ─── */}
+        {texture !== "none" && (
+          <div ref={textureRef} className={`canvas-texture canvas-texture--${texture}`} />
         )}
 
         {/* ─── Pressure pen overlay (inside canvas-container for correct positioning) ─── */}

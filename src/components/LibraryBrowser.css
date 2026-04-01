@@ -31,9 +31,10 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
+    border-top: 1px solid rgba(212, 175, 55, 0.15);
     box-shadow:
         0 24px 80px rgba(0, 0, 0, 0.6),
-        0 0 30px rgba(212, 175, 55, 0.05);
+        0 0 15px rgba(212, 175, 55, 0.03);
     animation: lib-scale-in 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
@@ -62,17 +63,17 @@
 }
 
 .lib-browser-title-row h2 {
-    font-size: 1.15rem;
-    font-weight: 600;
+    font-size: 1.3rem;
+    font-weight: 700;
     color: #E9DFB4;
-    font-family: "Cormorant Garamond", Georgia, serif;
-    letter-spacing: 0.04em;
+    font-family: var(--font-display);
+    letter-spacing: 0.05em;
 }
 
 .lib-browser-close {
     background: rgba(212, 197, 160, 0.06);
     border: 1px solid rgba(212, 197, 160, 0.08);
-    color: #8B93A7;
+    color: #9A9282;
     font-size: 0.9rem;
     width: 32px;
     height: 32px;
@@ -84,10 +85,21 @@
     transition: all 200ms ease;
 }
 
+.lib-browser-close {
+    transition:
+        transform 250ms cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow 250ms ease,
+        background 200ms ease,
+        color 200ms ease,
+        border-color 200ms ease;
+}
+
 .lib-browser-close:hover {
     background: rgba(212, 197, 160, 0.12);
     color: #E9DFB4;
     border-color: rgba(212, 197, 160, 0.2);
+    transform: scale(1.08);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
 }
 
 .lib-browser-subtitle {
@@ -153,7 +165,7 @@
 }
 
 .lib-browser-error {
-    color: #f87171;
+    color: var(--danger-hover);
 }
 
 /* ─── Cards Grid ───────────────────────────────────────────────── */
@@ -165,8 +177,13 @@
 
 /* ─── Individual Card ──────────────────────────────────────────── */
 .lib-card {
-    background: rgba(7, 20, 23, 0.6);
+    background: radial-gradient(
+        ellipse at top,
+        rgba(7, 20, 23, 0.6) 0%,
+        rgba(5, 16, 19, 0.7) 100%
+    );
     border: 1px solid rgba(212, 197, 160, 0.07);
+    border-top: 1px solid rgba(212, 175, 55, 0.12);
     border-radius: 12px;
     overflow: hidden;
     display: flex;
@@ -176,10 +193,12 @@
 
 .lib-card:hover {
     border-color: rgba(212, 175, 55, 0.25);
+    border-top-color: rgba(212, 175, 55, 0.3);
     transform: translateY(-2px);
     box-shadow:
         0 8px 24px rgba(0, 0, 0, 0.4),
-        0 0 12px rgba(212, 175, 55, 0.06);
+        0 0 20px rgba(212, 175, 55, 0.08),
+        0 0 40px rgba(15, 74, 74, 0.1);
 }
 
 .lib-card-preview {
@@ -205,9 +224,11 @@
 }
 
 .lib-card-name {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     font-weight: 600;
-    color: #D4C5A0;
+    color: #F4EDD8;
+    font-family: var(--font-heading);
+    letter-spacing: 0.02em;
     margin-bottom: 4px;
     white-space: nowrap;
     overflow: hidden;
@@ -216,7 +237,7 @@
 
 .lib-card-desc {
     font-size: 0.75rem;
-    color: #8B93A7;
+    color: #9A9282;
     line-height: 1.45;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -241,16 +262,31 @@
     font-weight: 600;
     font-family: inherit;
     cursor: pointer;
-    transition: all 200ms ease;
     background: rgba(212, 175, 55, 0.08);
     color: #E9DFB4;
+    transition:
+        transform 280ms cubic-bezier(0.34, 1.56, 0.64, 1),
+        box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1),
+        background 200ms ease,
+        color 200ms ease,
+        border-color 200ms ease;
 }
 
 .lib-card-btn:hover:not(:disabled) {
     background: linear-gradient(135deg, #E9DFB4 0%, #F0B429 100%);
     color: #051619;
     border-color: transparent;
-    box-shadow: 0 4px 12px rgba(212, 175, 55, 0.35);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow:
+        0 6px 18px rgba(212, 175, 55, 0.4),
+        0 3px 8px rgba(0, 0, 0, 0.3),
+        0 0 25px rgba(212, 175, 55, 0.15),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.lib-card-btn:active:not(:disabled) {
+    transform: translateY(0px) scale(0.97);
+    transition: transform 80ms ease;
 }
 
 .lib-card-btn:disabled {
@@ -259,7 +295,7 @@
 }
 
 .lib-card-btn.installed {
-    background: rgba(34, 197, 94, 0.1);
-    color: #4ade80;
-    border-color: rgba(34, 197, 94, 0.2);
+    background: rgba(15, 74, 74, 0.25);
+    color: #D4C5A0;
+    border-color: rgba(212, 197, 160, 0.15);
 }
