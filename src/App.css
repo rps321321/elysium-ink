@@ -498,27 +498,17 @@ body,
   transition: transform 80ms ease !important;
 }
 
-/* ── Zoom + undo/redo buttons ────────────────────────────────────── */
+/* ── Zoom + undo/redo buttons — color only, no individual scale ──── */
 .excalidraw .zoom-actions button,
 .excalidraw .undo-redo-buttons button {
   color: #9A9282;
-  transition:
-    transform 250ms cubic-bezier(0.34, 1.56, 0.64, 1),
-    color 200ms ease,
-    background 200ms ease !important;
+  transition: color 200ms ease, background 200ms ease !important;
 }
 
 .excalidraw .zoom-actions button:hover,
 .excalidraw .undo-redo-buttons button:hover {
   color: #D4C5A0;
   background: rgba(212, 197, 160, 0.08) !important;
-  transform: scale(1.12) !important;
-}
-
-.excalidraw .zoom-actions button:active,
-.excalidraw .undo-redo-buttons button:active {
-  transform: scale(0.9) !important;
-  transition: transform 80ms ease !important;
 }
 
 /* ── Help / shortcuts button ─────────────────────────────────────── */
