@@ -140,6 +140,8 @@ export function useDrawingsActions() {
             updatedAt: Date.now(),
         };
         dispatch({ type: "CREATE", meta });
+        // Sync URL hash so this tab tracks the new drawing
+        window.location.hash = `drawing-${newId}`;
     }, [dispatch, drawings]);
 
     const deleteDrawing = useCallback(
@@ -159,6 +161,8 @@ export function useDrawingsActions() {
     const setActiveDrawing = useCallback(
         (id: string) => {
             dispatch({ type: "SET_ACTIVE", id });
+            // Sync URL hash so each tab remembers its drawing
+            window.location.hash = `drawing-${id}`;
         },
         [dispatch]
     );
@@ -171,12 +175,14 @@ export function DrawingsProvider({ children }: { children: ReactNode }) {
     const [state, dispatch] = useReducer(drawingsReducer, initialState);
     const prevDrawingsRef = useRef<string>("");
 
-    // Boot: load index or create first drawing
+    // Boot: load index, resolve active drawing from URL hash or default
     useEffect(() => {
         let cancelled = false;
         (async () => {
             let index = await getDrawingsIndex();
             if (cancelled) return;
+
+            // If no drawings exist, create the first one
             if (index.length === 0) {
                 const firstId = generateId();
                 index = [
@@ -190,10 +196,19 @@ export function DrawingsProvider({ children }: { children: ReactNode }) {
                 await saveDrawingsIndex(index);
                 if (cancelled) return;
             }
+
+            // Resolve active drawing from URL hash (e.g. #drawing-abc123)
+            const hashId = window.location.hash.replace(/^#drawing-/, "");
+            const fromHash = hashId && index.find((d) => d.id === hashId);
+            const activeId = fromHash ? fromHash.id : index[0].id;
+
+            // Sync hash to URL so bookmarks/new-tabs work
+            window.location.hash = `drawing-${activeId}`;
+
             dispatch({
                 type: "BOOT_COMPLETE",
                 drawings: index,
-                activeId: index[0].id,
+                activeId,
             });
         })();
         return () => {
