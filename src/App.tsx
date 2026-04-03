@@ -161,11 +161,6 @@ function AppInner() {
     input.click();
   }, [excalidrawAPI]);
 
-  // ─── Open Library Browser ──────────────────────────────────────
-  const openLibraryBrowser = useCallback(() => {
-    setShowLibraryBrowser(true);
-  }, []);
-
   // ─── Intercept Excalidraw's built-in "Browse libraries" button ──
   useEffect(() => {
     const container = canvasContainerRef.current;
